@@ -1,0 +1,95 @@
+/* Reset-ish */
+* {
+    box-sizing: border-box;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #0f1115;
+}
+
+/* Calculator shell */
+.calculator-container {
+    width: 320px;
+    background: #1a1d24;
+    border-radius: 18px;
+    padding: 16px;
+    box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.03);
+}
+
+/* Display */
+.calculator-display {
+    height: 80px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: #0c0e13;
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 2rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    overflow: hidden;
+    font-family:  monospace;
+}
+
+/* Buttons container (grid defined in JS) */
+.calculator-buttons {
+    gap: 10px; /* works with grid */
+}
+
+/* Buttons */
+.calculator-buttons button {
+    height: 56px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    cursor: pointer;
+    background: #2a2e39;
+    color: #ffffff;
+    transition: background 0.15s ease, transform 0.05s ease;
+    touch-action: manipulation;
+}
+@media (hover: hover) and (pointer: fine) {
+.calculator-buttons button:hover {
+    background: #343949;
+}
+}
+
+.calculator-buttons button:active {
+    transform: scale(0.97);
+}
+
+/* Operator buttons */
+.calculator-buttons button:nth-child(4n) {
+    background: #ff9f0a;
+    color: #000;
+}
+
+.calculator-buttons button:nth-child(4n):hover {
+    background: #ffb23a;
+}
+
+/* Top utility buttons */
+.calculator-buttons button:nth-child(-n+3) {
+    background: #3a3f4f;
+    color: #fff;
+}
+
+/* Equals button */
+.calculator-buttons button:last-child {
+    background: #4cc2ff;
+    color: #000;
+}
+
+.calculator-buttons button:last-child:hover {
+    background: #6ad0ff;
+}
