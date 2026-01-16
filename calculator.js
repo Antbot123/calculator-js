@@ -31,7 +31,10 @@ setup()
 
 function updateDisplay() {
 
-    
+    if (displayOverride !== null) {
+        display.textContent = displayOverride
+        return
+    }
 
     
     const result = [...token_arr.map(t => {
@@ -98,14 +101,20 @@ const OPS = {
     add: (a, b) => a + b,
     sub: (a, b) => a - b,
     mul: (a, b) => a * b,
-    div: (a, b) => a / b,
+    div: (a, b) => {
+        if (b === 0) {
+            throw new Error("Div by zero undefined")
+        } else {
+            return a/b
+        }
+    },
     power: (a,b) => a ** b,
 }
 
 
 let token_arr = []
 let digitStringBuffer = ""
-
+let displayOverride = null
 
 
 
@@ -149,32 +158,52 @@ const HANDLERS = {
         
     },
     command: (t) => {
+
         if (t.name === "clear") {
-            token_arr = []
-            digitStringBuffer = ""
+            clearDisplay()
         }
         if (t.name === "execute") {
-            flushNumber()
-
-            if (token_arr.length === 0) return
-
-            const result = evaluate(token_arr)
-
-            // reset state and put result in token arr
-            token_arr = [{
-                kind: "number",
-                value: result
-            }]
-
-            digitStringBuffer = ""
             
+            try {
+                execute()
+                displayOverride = null
+            } catch (err) {
+                clearDisplay()
+                displayOverride = err.message
+                
+            }
             
         }
     }
 
 }
 
+function execute() {
+    flushNumber()
+
+    if (token_arr.length === 0) return
+
+    const result = evaluate(token_arr)
+
+    // reset state and put result in token arr
+    token_arr = [{
+        kind: "number",
+        value: result
+    }]
+
+    digitStringBuffer = ""
+}
+
+function clearDisplay() {
+    token_arr = []
+    digitStringBuffer = ""
+}
+
 function dispatch(symbol) {
+    if (displayOverride !== null) {
+        displayOverride = null
+    }
+
     const token = classify(symbol)
     if (!token) return
     //dynamically calls handler with optional chaining operator
@@ -215,7 +244,26 @@ function evaluate(tokens) {
     return t[0].value
 }
 
+let prevKey = ""
+document.addEventListener('keydown', (e) => {
+    
+    const k = e.key
 
+    if (k === "Enter") {
+        dispatch("=")
+    } else if (k === "Backspace" || k === "Clear") {
+        dispatch("clear")
+    } else if (prevKey === "*" && k === "*") {
+        dispatch("^")
+    } else {
+        dispatch(k)
+    } 
+
+    prevKey = k
+        
+
+        
+});
 
 
 
