@@ -77,6 +77,10 @@ const TOKEN_DEFS = {
         test: ch => ch === "/",
         emit: () => ({ kind: "op", op: "div", precedence: 2 , value: "÷"})
     },
+    power: {
+        test: ch => ch === "^",
+        emit: () => ({kind: "op", op: "power", precedence: 3, value: "^" })
+    },
 
     clear: {
         test: ch => ch === "clear",
@@ -86,14 +90,16 @@ const TOKEN_DEFS = {
     execute: {
         test: ch => ch === "=",
         emit: () => ({kind: "command", name:"execute"})
-    }
+    },
+
 }
 
 const OPS = {
     add: (a, b) => a + b,
     sub: (a, b) => a - b,
     mul: (a, b) => a * b,
-    div: (a, b) => a / b
+    div: (a, b) => a / b,
+    power: (a,b) => a ** b,
 }
 
 
@@ -201,8 +207,11 @@ function reduce(tokens, minPrecedence) {
 }
 function evaluate(tokens) {
     let t = tokens
-    t = reduce(t, 2)
-    t = reduce(t, 1)
+    
+    for (let index = 3; index > 0; index--) {
+        t = reduce(t, index) 
+    }
+
     return t[0].value
 }
 
